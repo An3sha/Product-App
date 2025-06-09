@@ -10,14 +10,10 @@ A modern full-stack application for product management, featuring a React fronte
 - Real-time product updates
 - Toast notifications for user feedback
 - Modal-based product creation and editing
-- Image upload support
-- Form validation
 
 ### Backend
 - RESTful API with Express.js
 - MongoDB database integration
-- JWT authentication
-- File upload handling
 - Error handling middleware
 - CORS enabled
 - Environment variable configuration
@@ -36,8 +32,6 @@ A modern full-stack application for product management, featuring a React fronte
 - Node.js
 - Express.js
 - MongoDB with Mongoose
-- JWT for authentication
-- Multer for file uploads
 - CORS for cross-origin requests
 - Dotenv for environment variables
 
@@ -64,7 +58,6 @@ npm install
 ```env
 PORT=3000
 MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
 NODE_ENV=development
 ```
 

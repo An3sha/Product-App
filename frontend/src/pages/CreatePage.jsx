@@ -3,6 +3,8 @@ import { Button, TextField, Box, Typography, Container, Snackbar, Alert } from "
 import { useState } from "react";
 import { useProductStore } from "../store/product";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/ui/toaster";
+
 
 const CreatePage = () => {
   const { isDarkMode } = useTheme();
@@ -44,9 +46,9 @@ const CreatePage = () => {
       // Clear form after successful submission
       setFormData({ name: "", price: "", image: "" });
       // Navigate to home page after a short delay
-      // setTimeout(() => {
-      //   navigate("/");
-      // }, 2000);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     }
   };
 
@@ -149,7 +151,7 @@ const CreatePage = () => {
           <Button
             variant="outlined"
             fullWidth
-            // onClick={() => navigate("/")}
+            onClick={() => navigate("/")}
             sx={{
               borderRadius: 99,
               borderColor: '#ff9800',
@@ -168,27 +170,13 @@ const CreatePage = () => {
         </Box>
       </Box>
 
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={3000} 
+     <Toast
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbar.severity}
-          sx={{ 
-            width: '100%',
-            backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-            color: isDarkMode ? '#fff' : '#222',
-            '& .MuiAlert-icon': {
-              color: snackbar.severity === 'success' ? '#4caf50' : '#f44336'
-            }
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 };

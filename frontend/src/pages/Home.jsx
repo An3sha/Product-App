@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
-import { Box, Typography, Card, CardContent, CardMedia, Grid, Button, Stack , Snackbar, Alert} from "@mui/material";
+import { Box, Typography, Card, CardContent, CardMedia, Grid, Button, Stack } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { FaPencil } from "react-icons/fa6";
 import { FaRocket } from "react-icons/fa";
 import { useProductStore } from "../store/product";
 import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-
-
+import UpdateProductModal from "./UpdateProductModal";
+import Toast from "../components/ui/toaster";
 
 const Home = () => {
   const { products, fetchProducts, deleteProduct } = useProductStore();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [open, setOpen] = useState(false);
   const { isDarkMode } = useTheme();
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -44,6 +46,29 @@ const Home = () => {
     }
   }
 
+  // const handleUpdate = async (id, formData) => {
+  //   const result = await updateProduct(id, formData);
+  //   if (result.success) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: result.message,
+  //       severity: "success"
+  //     });
+  //   } else {
+  //     setSnackbar({
+  //       open: true,
+  //       message: result.message,
+  //       severity: "error"
+  //     });
+  //   }
+  // }
+
+  const handleOpen = (product) => {
+    setSelectedProduct(product);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+  
   const bgGradient = isDarkMode
     ? "linear-gradient(180deg, #181c24 0%, #232a36 100%)"
     : "linear-gradient(180deg, #fffbe6 0%, #ffe066 100%)";
@@ -151,7 +176,7 @@ const Home = () => {
                   </Typography>
                 </CardContent>
                 <Stack direction="row" spacing={1} justifyContent="center" sx={{ width: "100%", mb: 1 }}>
-                  <Button variant="outlined" color="primary" size="small" sx={{ minWidth: 0, px: 1.5, borderRadius: 2 }}>
+                  <Button variant="outlined" color="primary" size="small" sx={{ minWidth: 0, px: 1.5, borderRadius: 2 }} onClick={() => handleOpen(product)}>
                     <FaPencil size={16} />
                   </Button>
                   <Button variant="outlined" color="error" size="small" sx={{ minWidth: 0, px: 1.5, borderRadius: 2 }} onClick={() => handleDelete(product._id)}>
@@ -163,28 +188,14 @@ const Home = () => {
           ))}
         </Grid>
       )}
-      <Snackbar
+      <Toast
         open={snackbar.open}
-   
+        message={snackbar.message}
         severity={snackbar.severity}
-         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={3000}
-        >
-         <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbar.severity}
-          sx={{ 
-            width: '100%',
-            backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-            color: isDarkMode ? '#fff' : '#222',
-            '& .MuiAlert-icon': {
-              color: snackbar.severity === 'success' ? '#4caf50' : '#f44336'
-            }
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        onClose={handleCloseSnackbar}
+        isDarkMode={isDarkMode}
+      />
+      {open && selectedProduct && <UpdateProductModal open={open} onClose={handleClose} product={selectedProduct} />}
     </Box>
   );
 };

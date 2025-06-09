@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 export const useProductStore = create((set) => ({
   products: [],
+  // const {products, setProducts} = useState([]) this is the local state
+  // const {products, setProducts} = useProductStore() this is the global state
   setProducts: (products) => set({ products }),
   createProduct: async (formData) => {
     if (!formData.name || !formData.price || !formData.image) {
@@ -63,7 +65,32 @@ export const useProductStore = create((set) => ({
       return { success: false, message: "Failed to delete product" };
     }
   },
+  updateProduct: async (id, formData) => {
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        return {
+          success: false,
+          message: errorData.message || "Failed to update product",
+        };
+      }
+      const responseData = await res.json();
+      set((state) => ({
+        products: state.products.map((product) =>
+          product._id === id ? responseData.data : product
+        ),
+      }));
+      return { success: true, message: responseData.message };
+    } catch (error) {
+      console.error("Error updating product:", error);
+      return { success: false, message: "Failed to update product" };
+    }
+  },
 }));
-
-// const {products, setProducts} = useState([]) this is the local state
-// const {products, setProducts} = useProductStore() this is the global state

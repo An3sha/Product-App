@@ -2,7 +2,8 @@ import express from "express";
 import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 import productRoutes from "./routes/product.js";
-import cors from "cors";
+import cors from "cors"; //cors is a middleware that allows to make requests from the frontend to the backend
+import path from "path";
 
 dotenv.config();
 
@@ -106,6 +107,15 @@ app.use("/api/products", productRoutes);
 // });
 
 const port = process.env.PORT || 3000;
+
+const __dirname = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "frontend", "dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 // Connect to database first, then start the server
 connectDB()
